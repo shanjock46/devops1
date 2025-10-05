@@ -1,41 +1,59 @@
 pipeline {
     agent any
+    
+    tools {
+        maven 'Maven' // Make sure Maven is configured in Jenkins Global Tool Configuration
+    }
+    
     stages {
         stage('Checkout') {
             steps {
                 // Checkout your source code from version control
-                git 'https://github.com/shanjock46/devops1.git'
+                git branch: 'master',
+                    url: 'https://github.com/shanjock46/devops1.git'
             }
         }
+        
         stage('Build') {
             steps {
                 // Use Maven to build your project
                 sh 'mvn clean package'
             }
         }
+        
         stage('Test') {
             steps {
-                // Run tests if applicable
+                // Run tests
                 sh 'mvn test'
             }
         }
+        
         stage('Deploy') {
             steps {
-                // Deploy your artifact, if necessary
-                // Example: sh 'mvn deploy'
+                // Deploy your artifact
+                echo 'Deploying application...'
+                // Uncomment and modify as needed:
+                // sh 'mvn deploy'
+                // Or copy to deployment location:
+                // sh 'cp target/*.jar /deployment/path/'
             }
         }
     }
     
-
     post {
         success {
-            // This block will be executed if the pipeline runs successfully
             echo 'Pipeline executed successfully!'
+            // Optional: Archive artifacts
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
         failure {
-            // This block will be executed if the pipeline fails
             echo 'Pipeline failed!'
+            // Optional: Send notifications
+        }
+        always {
+            // Cleanup workspace or publish test results
+            junit '**/target/surefire-reports/*.xml'
+            cleanWs()
         }
     }
-} 
+}
