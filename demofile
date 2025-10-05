@@ -22,13 +22,14 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                // Deploy your artifact, if necessary
-                // Example: sh 'mvn deploy'
+                // Deploy your artifact
+                echo 'Deploying application...'
+                // Uncomment when ready to deploy:
+                // sh 'mvn deploy'
             }
         }
     }
     
-
     post {
         success {
             // This block will be executed if the pipeline runs successfully
@@ -39,4 +40,4 @@ pipeline {
             echo 'Pipeline failed!'
         }
     }
-} 
+}
